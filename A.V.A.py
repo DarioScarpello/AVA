@@ -1,6 +1,7 @@
 import speech_recognition as sr
 import pyttsx3
 import webbrowser
+import psycopg2
 
 #tts
 engine = pyttsx3.init()
@@ -8,11 +9,21 @@ engine = pyttsx3.init()
 #engine.say('Jutta Gefluegel')
 #engine.runAndWait()
 
+# # connection = psycopg2.connect("dbname=AVA user=postgres password=postgres")
+# # cur = connection.cursor()
+# # cur.execute("select * from keyphrases")
+# # output = cur.fetchall()
+# # print(output)
+
 #stt
 listener = sr.Recognizer()
 
 with sr.Microphone() as source:
+    listener.adjust_for_ambient_noise(source, duration=5)
     voice = listener.listen(source)
+
+print("Listenting...")
+
 
 try:
     term = listener.recognize_google(voice, language="de-AT")
