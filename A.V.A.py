@@ -30,3 +30,5 @@ try:
         print("Kein Befehl") 
 except:                           
     print("Could not understand audio")
+
+#Test2
