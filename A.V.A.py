@@ -24,15 +24,16 @@ altphrases = [r[0] for r in cur.fetchall()] 	# the tuple is converted into a nor
 
 
 #stt
-listener = sr.Recognizer()
-
-with sr.Microphone() as source:
-    listener.adjust_for_ambient_noise(source, duration=1)
-    voice = listener.listen(source)
+listener = sr.Recognizer()      # defining the listener object
 
 print("Listenting...")
 
+with sr.Microphone() as source:
+    listener.adjust_for_ambient_noise(source, duration=1)   # adjustment of the listener, to cut out ambient noise
+    voice = listener.listen(source)
 
+
+# try catch block to give out error message, to filter out exceptions 
 try:
     term = listener.recognize_google(voice, language="de-AT")
     # if term in altphrases:
