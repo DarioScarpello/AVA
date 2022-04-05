@@ -10,12 +10,12 @@ engine = pyttsx3.init()
 #engine.runAndWait()
 
 
-connection = psycopg2.connect("dbname=AVA user=postgres password=postgres")
-cur = connection.cursor()
+# connection = psycopg2.connect("dbname=AVA user=postgres password=postgres")
+# cur = connection.cursor()
 
-query = "select phrase from altphrases"
-cur.execute(query)
-altphrases = cur.fetchall()
+# query = "select phrase from altphrases"
+# cur.execute(query)
+# altphrases = cur.fetchall()
 
 
 
