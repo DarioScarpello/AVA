@@ -6,41 +6,35 @@ import psycopg2
 #tts
 engine = pyttsx3.init()
 
-# engine.say('Hallo ich rede')
-# engine.runAndWait()
-
-# Creating the connection via the connection string to the database and the cursor to fetch the data 
-connection = psycopg2.connect("dbname=AVA user=postgres password=postgres") # Connectionstring verbergen !!!
-cur = connection.cursor()
-
-# the query that gets all the altphrases, which will be used throughout the whole program
-query = "select phrase from altphrases"    
-cur.execute(query)         
-# altphrases = cur.fetchall()                   # only .fetchall() returns a tuple, to use the "if term in list" method 
-altphrases = [r[0] for r in cur.fetchall()] 	# the tuple is converted into a normal list via the code on the left
+#engine.say('Jutta Gefluegel')
+#engine.runAndWait()
 
 
+# connection = psycopg2.connect("dbname=AVA user=postgres password=postgres")
+# cur = connection.cursor()
+
+# query = "select phrase from altphrases"
+# cur.execute(query)
+# altphrases = cur.fetchall()
 
 
 
 #stt
-listener = sr.Recognizer()      # defining the listener object
+listener = sr.Recognizer()
+
+with sr.Microphone() as source:
+    listener.adjust_for_ambient_noise(source, duration=1)
+    voice = listener.listen(source)
 
 print("Listenting...")
 
-with sr.Microphone() as source:
-    listener.adjust_for_ambient_noise(source, duration=1)   # adjustment of the listener, to cut out ambient noise
-    voice = listener.listen(source)
 
-
-# try catch block to give out error message, to filter out exceptions 
 try:
     term = listener.recognize_google(voice, language="de-AT")
     # if term in altphrases:
 
 
     print(term)
-
 
     if "suche" in term.lower():
         searchterm = term.replace(" ", "+")
