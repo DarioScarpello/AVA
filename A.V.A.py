@@ -32,14 +32,23 @@ with sr.Microphone() as source:
     listener.adjust_for_ambient_noise(source, duration=1)   # adjustment of the listener, to cut out ambient noise
     voice = listener.listen(source)
 
-print("Listenting...")
 
 
 # try catch block to give out error message, to filter out exceptions 
 try:
     term = listener.recognize_google(voice, language="de-AT")
-    # if term in altphrases:
+    for phrase in altphrases:
+        if term in phrase:
+            term = phrase
 
+
+    if term in altphrases:
+        query = "select k.phrase from keyphrases k join altphrases a on k.id = a.fid where a.phrase = " + term
+        cur.execute(query)
+        keyphrase = [r[0] for r in cur.fetchall()]
+
+    print(keyphrase)
+    
 
     print(term)
 
