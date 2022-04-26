@@ -25,7 +25,7 @@ CREATE FUNCTION public.add_altphrase(altphrase character varying, tokeyphrase ch
     AS $$
 begin
     insert into altphrases (fid, phrase)
-    values ((select id from keyphrases where phrase = toKeyphrase), altphrase);
+    values ((select id from keyphrases where phrase = toKeyphrase), ' ' || altphrase || ' ');
     return 'Erfolgreich erstellt';
 
 exception
@@ -190,6 +190,8 @@ COPY public.altphrases (id, phrase, fid) FROM stdin;
 27	 mach nicht 	2
 6	 suche nach 	3
 31	 suche bitte nach 	3
+32	 google nach 	3
+34	 google bitte nach 	3
 \.
 
 
@@ -213,7 +215,7 @@ COPY public.keyphrases (id, phrase) FROM stdin;
 -- Name: altphrases_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.altphrases_id_seq', 31, true);
+SELECT pg_catalog.setval('public.altphrases_id_seq', 34, true);
 
 
 --
