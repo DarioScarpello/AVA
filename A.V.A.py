@@ -14,7 +14,7 @@ connection = psycopg2.connect("dbname=AVA user=postgres password=postgres") # Co
 cur = connection.cursor()
 
 # the query that gets all the altphrases, which will be used throughout the whole program
-query = "select phrase from altphrases;"    
+query = "select phrase from altphrases order by length(phrase) desc"    
 cur.execute(query)         
 # altphrases = cur.fetchall()                   # only .fetchall() returns a tuple, to use the "if term in list" method 
 altphrases = [r[0] for r in cur.fetchall()] 	# the tuple is converted into a normal list via the code on the left
@@ -37,6 +37,7 @@ print("Listening 2")
 # try catch block to give out error message, to filter out exceptions 
 try:
     term = " " + listener.recognize_google(voice, language="de-AT").lower()
+    
     for phrase in altphrases:
         # term splitten und dann schauen ob phrase in dieser liste vorhanden ist
 
