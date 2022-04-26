@@ -165,30 +165,31 @@ ALTER TABLE ONLY public.keyphrases ALTER COLUMN id SET DEFAULT nextval('public.k
 --
 
 COPY public.altphrases (id, phrase, fid) FROM stdin;
-10	was hab ich zu erledigen	5
-11	was ist noch zu tuen	5
-3	google	3
-6	suche	3
-2	nein	2
-4	na klar	1
-5	auf keinen fall	2
-1	ja	1
-9	classroom	4
-7	niemals	2
-12	wikipedia	6
-13	wer ist	6
-14	was ist	6
-15	suche auf wikipedia	6
-18	suche auf google	3
-19	sicher nicht	2
-20	bitte	1
-21	mach	1
-22	youtube	7
-23	suche auf youtube	7
-24	zeig mir	8
-25	spiel ab	8
-26	oeffne auf youtube	8
-27	mach nicht	2
+10	 was hab ich zu erledigen 	5
+11	 was ist noch zu tuen 	5
+3	 google 	3
+2	 nein 	2
+4	 na klar 	1
+5	 auf keinen fall 	2
+1	 ja 	1
+9	 classroom 	4
+7	 niemals 	2
+12	 wikipedia 	6
+13	 wer ist 	6
+14	 was ist 	6
+15	 suche auf wikipedia 	6
+18	 suche auf google 	3
+19	 sicher nicht 	2
+20	 bitte 	1
+21	 mach 	1
+22	 youtube 	7
+23	 suche auf youtube 	7
+24	 zeig mir 	8
+25	 spiel ab 	8
+26	 oeffne auf youtube 	8
+27	 mach nicht 	2
+6	 suche nach 	3
+31	 suche bitte nach 	3
 \.
 
 
@@ -212,7 +213,7 @@ COPY public.keyphrases (id, phrase) FROM stdin;
 -- Name: altphrases_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.altphrases_id_seq', 27, true);
+SELECT pg_catalog.setval('public.altphrases_id_seq', 31, true);
 
 
 --

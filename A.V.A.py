@@ -14,7 +14,7 @@ connection = psycopg2.connect("dbname=AVA user=postgres password=postgres") # Co
 cur = connection.cursor()
 
 # the query that gets all the altphrases, which will be used throughout the whole program
-query = "select phrase from altphrases"    
+query = "select phrase from altphrases;"    
 cur.execute(query)         
 # altphrases = cur.fetchall()                   # only .fetchall() returns a tuple, to use the "if term in list" method 
 altphrases = [r[0] for r in cur.fetchall()] 	# the tuple is converted into a normal list via the code on the left
@@ -32,18 +32,22 @@ with sr.Microphone() as source:
     listener.adjust_for_ambient_noise(source, duration=1)   # adjustment of the listener, to cut out ambient noise
     voice = listener.listen(source)
 
-
+print("Listening 2")
 
 # try catch block to give out error message, to filter out exceptions 
 try:
-    term = listener.recognize_google(voice, language="de-AT")
+    term = " " + listener.recognize_google(voice, language="de-AT").lower()
     for phrase in altphrases:
-        if term in phrase:
-            term = phrase
+        # term splitten und dann schauen ob phrase in dieser liste vorhanden ist
+
+        if phrase in term:
+            termToSearch = term.replace(phrase, "")
+            altphraseToUseInQuery = phrase
+            break
 
 
-    if term in altphrases:
-        query = "select k.phrase from keyphrases k join altphrases a on k.id = a.fid where a.phrase = " + term
+    if altphraseToUseInQuery in altphrases:
+        query = "select k.phrase from keyphrases k join altphrases a on k.id = a.fid where a.phrase = '" + altphraseToUseInQuery + "'"
         cur.execute(query)
         keyphrase = [r[0] for r in cur.fetchall()]
 
@@ -53,9 +57,10 @@ try:
     print(term)
 
 
-    if "suche" in term.lower():
-        searchterm = term.replace(" ", "+")
-        link = "https://www.google.com/search?q=" + searchterm
+
+
+    if keyphrase[0] == "google":
+        link = "https://www.google.com/search?q=" + termToSearch
         webbrowser.open(link)
     elif "classroom" in term.lower():
         webbrowser.open('https://classroom.google.com/u/1/h')
@@ -63,6 +68,6 @@ try:
         webbrowser.open('https://classroom.google.com/u/1/a/not-turned-in/all')
     else:
         print("Kein Befehl") 
-except:                           
-    print("Could not understand audio")
+except Exception as e:                           
+    print(e)
 
