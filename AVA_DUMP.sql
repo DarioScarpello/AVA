@@ -165,7 +165,6 @@ ALTER TABLE ONLY public.keyphrases ALTER COLUMN id SET DEFAULT nextval('public.k
 --
 
 COPY public.altphrases (id, phrase, fid) FROM stdin;
-10	 was hab ich zu erledigen 	5
 11	 was ist noch zu tuen 	5
 3	 google 	3
 2	 nein 	2
@@ -186,12 +185,13 @@ COPY public.altphrases (id, phrase, fid) FROM stdin;
 23	 suche auf youtube 	7
 24	 zeig mir 	8
 25	 spiel ab 	8
-26	 oeffne auf youtube 	8
 27	 mach nicht 	2
 6	 suche nach 	3
 31	 suche bitte nach 	3
 32	 google nach 	3
 34	 google bitte nach 	3
+26	 öffne auf youtube 	8
+10	 was habe ich zu erledigen 	5
 \.
 
 

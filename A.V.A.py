@@ -1,3 +1,4 @@
+from email.policy import default
 import speech_recognition as sr
 import pyttsx3
 import webbrowser
@@ -36,15 +37,18 @@ print("Listening 2")
 
 # try catch block to give out error message, to filter out exceptions 
 try:
-    term = " " + listener.recognize_google(voice, language="de-AT").lower()
+    term = " " + listener.recognize_google(voice, language="de-AT")+ " ".lower()
     
-    for phrase in altphrases:
+    for phrase in altphrases:   
         # term splitten und dann schauen ob phrase in dieser liste vorhanden ist
 
         if phrase in term:
-            termToSearch = term.replace(phrase, "")
-            altphraseToUseInQuery = phrase
-            break
+            if phrase == " google " or phrase == " suche nach ":
+                termToSearch = term.replace(phrase, "")
+                altphraseToUseInQuery = phrase
+            else:
+                altphraseToUseInQuery = phrase
+                break
 
 
     if altphraseToUseInQuery in altphrases:
@@ -52,23 +56,35 @@ try:
         cur.execute(query)
         keyphrase = [r[0] for r in cur.fetchall()]
 
-    print(keyphrase)
-    
 
+    print(keyphrase[0])
+    
     print(term)
 
 
+    match keyphrase[0]:
+        case "google":
+            link = "https://www.google.com/search?q=" + termToSearch
+            webbrowser.open(link)
+        case "classroom":
+            webbrowser.open('https://classroom.google.com/u/1/h')
+        case "erledigen":
+            webbrowser.open('https://classroom.google.com/u/1/a/not-turned-in/all')
+            
+        case _:
+            print("Kein Befehl")
 
-
-    if keyphrase[0] == "google":
-        link = "https://www.google.com/search?q=" + termToSearch
-        webbrowser.open(link)
-    elif "classroom" in term.lower():
-        webbrowser.open('https://classroom.google.com/u/1/h')
-    elif "erledigen" in term.lower():
-        webbrowser.open('https://classroom.google.com/u/1/a/not-turned-in/all')
-    else:
-        print("Kein Befehl") 
+    # if keyphrase[0] == "google":
+    #     link = "https://www.google.com/search?q=" + termToSearch
+    #     webbrowser.open(link)
+    # elif keyphrase[0] == "classroom":
+    #     webbrowser.open('https://classroom.google.com/u/1/h')
+    # elif "erledigen" in term.lower():
+    #     webbrowser.open('https://classroom.google.com/u/1/a/not-turned-in/all')
+    # else:
+    #     print("Kein Befehl")
+     
+     
 except Exception as e:                           
     print(e)
 
