@@ -3,6 +3,9 @@ import speech_recognition as sr
 import pyttsx3
 import webbrowser
 import psycopg2
+import urllib.request
+import urllib.parse
+import re
 
 #tts
 engine = pyttsx3.init()
@@ -57,7 +60,7 @@ try:
                 break
             # if it is a youtube search, create the term to search
             # create a a variable for the phrase to search by in the query
-            elif keyphrase[0] == "youtube":
+            elif keyphrase[0] == "youtube" or keyphrase[0] == "youtube abspielen":
                 termToSearch = term.replace(phrase, "")
                 break
 
@@ -88,6 +91,15 @@ try:
             youtube_link = "https://www.youtube.com/results?search_query=" + termToSearch
             webbrowser.open(youtube_link)
             engine.say("Das hab ich auf Youtube gefunden")
+            engine.runAndWait()
+        case "youtube abspielen":
+            query_string = urllib.parse.urlencode({"search_query" : termToSearch})
+            html_content = urllib.request.urlopen("https://www.youtube.com.hk/results?"+query_string)
+            search_results = re.findall(r'url\"\:\"\/watch\?v\=(.*?(?=\"))', html_content.read().decode())
+            if search_results:
+                print("http://www.youtube.com/watch?v=" + search_results[0])
+                webbrowser.open("http://www.youtube.com/watch?v={}".format(search_results[0]))
+            engine.say("Das ist das erste Video zu" + termToSearch)
             engine.runAndWait()
 
         case _:
