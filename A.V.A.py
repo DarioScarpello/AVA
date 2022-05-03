@@ -3,12 +3,11 @@ import speech_recognition as sr
 import pyttsx3
 import webbrowser
 import psycopg2
-import urllib.request
-import urllib.parse
+import wikipediaapi
 import re
 
 #tts
-engine = pyttsx3.init()
+speaker = pyttsx3.init()
 
 # engine.say('Hallo ich rede')
 # engine.runAndWait()
@@ -33,18 +32,18 @@ listener = sr.Recognizer()      # defining the listener object
 print("Listenting...")
 
 # listen via microphone
-with sr.Microphone() as source:
-    listener.adjust_for_ambient_noise(source, duration=1)   # adjustment of the listener, to cut out ambient noise
-    voice = listener.listen(source)
+##with sr.Microphone() as source:
+##    listener.adjust_for_ambient_noise(source, duration=1)   # adjustment of the listener, to cut out ambient noise
+##    voice = listener.listen(source)
 
 
 # try catch block to give out error message, to filter out exceptions 
 try:
-    # recognize said words via google recognizer API
+    # recognize said words wia google recognizer API
     # add whitespace before and after said term, to match the data in database
-    term = " " + listener.recognize_google(voice, language="de-AT") +  " ".lower()
+    term = " wikipedia " #" " + listener.recognize_google(voice, language="de-AT") +  " ".lower()
     
-    # go over every altphrase
+    # go over ever altphrase
     for phrase in altphrases:   
         # check if an altphrase is present in the said term
         if phrase in term:
@@ -58,54 +57,72 @@ try:
             if keyphrase[0] == "google":
                 termToSearch = term.replace(phrase, "")
                 break
-            # if it is a youtube search, create the term to search
-            # create a a variable for the phrase to search by in the query
-            elif keyphrase[0] == "youtube" or keyphrase[0] == "youtube abspielen":
-                termToSearch = term.replace(phrase, "")
-                break
 
             break
 
 
+    print("Said term = " + term)
             
-    print(keyphrase[0]) 
+    print("Keyphrase = " + keyphrase[0]) 
     
-    print(term)
 
     # switch-case to get the correct code via command
     match keyphrase[0]:
-        case "google":
-            google_link = "https://www.google.com/search?q=" + termToSearch
-            webbrowser.open(google_link)
-            engine.say("Das habe ich im Internet zu " + termToSearch + "gefunden.")
-            engine.runAndWait()
-        case "classroom":
-            webbrowser.open('https://classroom.google.com/u/2/h')
-            engine.say("Ich habe Google Classroom für dich geöffnet")
-            engine.runAndWait()
-        case "erledigen":
-            webbrowser.open('https://classroom.google.com/u/2/a/not-turned-in/all')
-            engine.say("Diese Sachen hast du noch zu erledigen")
-            engine.runAndWait()
-        case "youtube":
-            youtube_link = "https://www.youtube.com/results?search_query=" + termToSearch
-            webbrowser.open(youtube_link)
-            engine.say("Das hab ich auf Youtube gefunden")
-            engine.runAndWait()
-        case "youtube abspielen":
-            query_string = urllib.parse.urlencode({"search_query" : termToSearch})
-            html_content = urllib.request.urlopen("https://www.youtube.com.hk/results?"+query_string)
-            search_results = re.findall(r'url\"\:\"\/watch\?v\=(.*?(?=\"))', html_content.read().decode())
-            if search_results:
-                print("http://www.youtube.com/watch?v=" + search_results[0])
-                webbrowser.open("http://www.youtube.com/watch?v={}".format(search_results[0]))
-            engine.say("Das ist das erste Video zu" + termToSearch)
-            engine.runAndWait()
+        # google search
+        case "google":                                                                      
+            link = "https://www.google.com/search?q=" + termToSearch
+            webbrowser.open(link)
 
-        case _:
+            speaker.say(f"Das habe ich im Internet zu {termToSearch} gefunden.")
+            speaker.runAndWait()
+
+        # open google classroom
+        case "classroom":                                                                   
+            webbrowser.open('https://classroom.google.com/u/2/h')
+
+            speaker.say("Ich habe Google Classroom für dich geöffnet")
+            speaker.runAndWait()
+
+        # open the not finished tasks in google classroom
+        case "erledigen":                                                                   
+            webbrowser.open('https://classroom.google.com/u/2/a/not-turned-in/all')
+
+            speaker.say("Diese Sachen hast du noch zu erledigen")
+            speaker.runAndWait()
+
+        # calculate said equasion 
+        case "rechner":      
+            termSplittet = term.split(" ")
+            for word in termSplittet:
+                print("bruh")
+
+            if "plus" in term:
+                print("bruh")
+
+            elif "minus" in term:
+                print("bruh")
+
+            elif "dividiert durch" in term:
+                print("bruh")
+            
+            elif "mal" in term:
+                print("bruh")
+
+        # read summary of wikipedia article
+        case "wikipedia":                                                                   
+            wiki_wiki = wikipediaapi.Wikipedia('de')
+            page_py = wiki_wiki.page('HTL Wien West')
+            if page_py.exists() == True: 
+                print(page_py.summary[0:500])
+            else:
+                print("Diesen Artikel gibt es leider nicht")
+
+        # Default case / No Command
+        case _:                                                                              
             print("Kein Befehl")
-            engine.say("Tut mir leid, das habe ich nicht verstanden.")
-            engine.runAndWait()
+            speaker.say("Tut mir leid, das habe ich nicht verstanden.")
+            speaker.runAndWait()
+
 
     # if keyphrase[0] == "google":
     #     link = "https://www.google.com/search?q=" + termToSearch
