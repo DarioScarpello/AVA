@@ -29,39 +29,46 @@ listener = sr.Recognizer()      # defining the listener object
 
 print("Listenting...")
 
+# listen via microphone
 with sr.Microphone() as source:
     listener.adjust_for_ambient_noise(source, duration=1)   # adjustment of the listener, to cut out ambient noise
     voice = listener.listen(source)
 
-print("Listening 2")
 
 # try catch block to give out error message, to filter out exceptions 
 try:
-    term = " " + listener.recognize_google(voice, language="de-AT")+ " ".lower()
+    # recognize said words wia google recognizer API
+    # add whitespace before and after said term, to match the data in database
+    term = " " + listener.recognize_google(voice, language="de-AT") +  " ".lower()
     
+    # go over ever altphrase
     for phrase in altphrases:   
-        # term splitten und dann schauen ob phrase in dieser liste vorhanden ist
-
+        # check if an altphrase is present in the said term
         if phrase in term:
+            # if it is a google search, create the term to search 
+            # create a variable for the phrase to search by in the query
             if phrase == " google " or phrase == " suche nach ":
                 termToSearch = term.replace(phrase, "")
                 altphraseToUseInQuery = phrase
+                break
+            # create a variable for the phrase to search by in the query
             else:
                 altphraseToUseInQuery = phrase
                 break
 
-
+    
     if altphraseToUseInQuery in altphrases:
+        # get the keyphrase according to the determined altphrase via the database
         query = "select k.phrase from keyphrases k join altphrases a on k.id = a.fid where a.phrase = '" + altphraseToUseInQuery + "'"
         cur.execute(query)
         keyphrase = [r[0] for r in cur.fetchall()]
 
 
-    print(keyphrase[0])
+    print(keyphrase[0]) 
     
     print(term)
 
-
+    # switch-case to get the correct code via command
     match keyphrase[0]:
         case "google":
             link = "https://www.google.com/search?q=" + termToSearch
