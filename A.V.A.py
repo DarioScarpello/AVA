@@ -59,10 +59,7 @@ try:
             break
 
 
-    
-    
-
-
+            
     print(keyphrase[0]) 
     
     print(term)
