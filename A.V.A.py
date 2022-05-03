@@ -37,11 +37,11 @@ with sr.Microphone() as source:
 
 # try catch block to give out error message, to filter out exceptions 
 try:
-    # recognize said words wia google recognizer API
+    # recognize said words via google recognizer API
     # add whitespace before and after said term, to match the data in database
     term = " " + listener.recognize_google(voice, language="de-AT") +  " ".lower()
     
-    # go over ever altphrase
+    # go over every altphrase
     for phrase in altphrases:   
         # check if an altphrase is present in the said term
         if phrase in term:
@@ -53,6 +53,11 @@ try:
             # if it is a google search, create the term to search 
             # create a variable for the phrase to search by in the query
             if keyphrase[0] == "google":
+                termToSearch = term.replace(phrase, "")
+                break
+            # if it is a youtube search, create the term to search
+            # create a a variable for the phrase to search by in the query
+            elif keyphrase[0] == "youtube":
                 termToSearch = term.replace(phrase, "")
                 break
 
@@ -67,8 +72,8 @@ try:
     # switch-case to get the correct code via command
     match keyphrase[0]:
         case "google":
-            link = "https://www.google.com/search?q=" + termToSearch
-            webbrowser.open(link)
+            google_link = "https://www.google.com/search?q=" + termToSearch
+            webbrowser.open(google_link)
             engine.say("Das habe ich im Internet zu " + termToSearch + "gefunden.")
             engine.runAndWait()
         case "classroom":
@@ -78,6 +83,11 @@ try:
         case "erledigen":
             webbrowser.open('https://classroom.google.com/u/2/a/not-turned-in/all')
             engine.say("Diese Sachen hast du noch zu erledigen")
+            engine.runAndWait()
+        case "youtube":
+            youtube_link = "https://www.youtube.com/results?search_query=" + termToSearch
+            webbrowser.open(youtube_link)
+            engine.say("Das hab ich auf Youtube gefunden")
             engine.runAndWait()
 
         case _:
