@@ -45,23 +45,22 @@ try:
     for phrase in altphrases:   
         # check if an altphrase is present in the said term
         if phrase in term:
+            # get the keyphrase according to the determined altphrase via the database
+            query = "select k.phrase from keyphrases k join altphrases a on k.id = a.fid where a.phrase = '" + phrase + "'"
+            cur.execute(query)
+            keyphrase = [r[0] for r in cur.fetchall()]
+
             # if it is a google search, create the term to search 
             # create a variable for the phrase to search by in the query
-            if phrase == " google " or phrase == " suche nach ":
+            if keyphrase[0] == "google":
                 termToSearch = term.replace(phrase, "")
-                altphraseToUseInQuery = phrase
-                break
-            # create a variable for the phrase to search by in the query
-            else:
-                altphraseToUseInQuery = phrase
                 break
 
+            break
+
+
     
-    if altphraseToUseInQuery in altphrases:
-        # get the keyphrase according to the determined altphrase via the database
-        query = "select k.phrase from keyphrases k join altphrases a on k.id = a.fid where a.phrase = '" + altphraseToUseInQuery + "'"
-        cur.execute(query)
-        keyphrase = [r[0] for r in cur.fetchall()]
+    
 
 
     print(keyphrase[0]) 
@@ -73,13 +72,21 @@ try:
         case "google":
             link = "https://www.google.com/search?q=" + termToSearch
             webbrowser.open(link)
+            engine.say("Das habe ich im Internet zu " + termToSearch + "gefunden.")
+            engine.runAndWait()
         case "classroom":
-            webbrowser.open('https://classroom.google.com/u/1/h')
+            webbrowser.open('https://classroom.google.com/u/2/h')
+            engine.say("Ich habe Google Classroom für dich geöffnet")
+            engine.runAndWait()
         case "erledigen":
-            webbrowser.open('https://classroom.google.com/u/1/a/not-turned-in/all')
-            
+            webbrowser.open('https://classroom.google.com/u/2/a/not-turned-in/all')
+            engine.say("Diese Sachen hast du noch zu erledigen")
+            engine.runAndWait()
+
         case _:
             print("Kein Befehl")
+            engine.say("Tut mir leid, das habe ich nicht verstanden.")
+            engine.runAndWait()
 
     # if keyphrase[0] == "google":
     #     link = "https://www.google.com/search?q=" + termToSearch
