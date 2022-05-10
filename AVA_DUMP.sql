@@ -192,10 +192,26 @@ COPY public.altphrases (id, phrase, fid) FROM stdin;
 34	 google bitte nach 	3
 26	 öffne auf youtube 	8
 10	 was habe ich zu erledigen 	5
-35	rechner	9
-36	wetter	10
-37	erinnern	11
-38	website	12
+37	 erinnern 	11
+38	 website 	12
+36	 wetter 	10
+35	 rechner 	9
+39	 wieviel ist 	9
+40	 zeige mir 	8
+41	 spiel 	8
+42	 spiele 	8
+43	 zeige mir das erste video zu 	8
+44	 zeig mir das erste video zu 	8
+45	 zeig mir etwas zu 	8
+46	 zeige mir etwas zu 	8
+47	 suche auf youtube nach 	7
+48	 such auf youtube nach 	7
+49	 finde auf youtube 	7
+50	 find auf youtube 	7
+51	 find 	7
+52	 finde 	7
+53	 suche bitte auf youtube nach 	7
+54	 such bitte auf youtube nach 	7
 \.
 
 
@@ -223,7 +239,7 @@ COPY public.keyphrases (id, phrase) FROM stdin;
 -- Name: altphrases_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.altphrases_id_seq', 38, true);
+SELECT pg_catalog.setval('public.altphrases_id_seq', 54, true);
 
 
 --
