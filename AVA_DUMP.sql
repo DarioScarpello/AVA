@@ -212,6 +212,9 @@ COPY public.altphrases (id, phrase, fid) FROM stdin;
 52	 finde 	7
 53	 suche bitte auf youtube nach 	7
 54	 such bitte auf youtube nach 	7
+55	 ja bitte 	1
+56	 wieviel ist 	9
+57	 was ergibt 	9
 \.
 
 
@@ -239,7 +242,7 @@ COPY public.keyphrases (id, phrase) FROM stdin;
 -- Name: altphrases_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.altphrases_id_seq', 54, true);
+SELECT pg_catalog.setval('public.altphrases_id_seq', 57, true);
 
 
 --

@@ -56,11 +56,19 @@ try:
             if keyphrase[0] == "google":
                 termToSearch = term.replace(phrase, "")
                 break
+
             # if it is a youtube search, create the term to search
             # create a a variable for the phrase to search by in the query
             elif keyphrase[0] == "youtube" or keyphrase[0] == "youtube abspielen":
                 termToSearch = term.replace(phrase, "")
                 break
+
+            # if it is a youtube search, create the term to search
+            # create a a variable for the phrase to search by in the query
+            elif keyphrase[0] == "wikipedia":
+                termToSearch = term.replace(phrase, "")
+                break
+
             break
 
     print(keyphrase[0]) 
@@ -73,24 +81,32 @@ try:
         case "google":
             google_link = "https://www.google.com/search?q=" + termToSearch
             webbrowser.open(google_link)
-            speaker.say("Das habe ich im Internet zu " + termToSearch + "gefunden.")
+            speaker.say(f"Das habe ich im Internet zu {termToSearch} gefunden.")
             speaker.runAndWait()
+
+        
         # open google classroom
         case "classroom":
             webbrowser.open('https://classroom.google.com/u/1/h')
             speaker.say("Ich habe Google Classroom für dich geöffnet")
             speaker.runAndWait()
+        
+        
         # open the not finished tasks in google classroom
         case "erledigen":
             webbrowser.open('https://classroom.google.com/u/1/a/not-turned-in/all')
             speaker.say("Diese Sachen hast du noch zu erledigen")
             speaker.runAndWait()
+        
+        
         # search on youtube
         case "youtube":
             youtube_link = "https://www.youtube.com/results?search_query=" + termToSearch
             webbrowser.open(youtube_link)
             speaker.say("Das hab ich auf Youtube gefunden")
             speaker.runAndWait()
+        
+        
         # open first video on yoututbe
         case "youtube abspielen":
             query_string = urllib.parse.urlencode({"search_query" : termToSearch})
@@ -101,27 +117,124 @@ try:
                 webbrowser.open("http://www.youtube.com/watch?v={}".format(search_results[0]))
             speaker.say("Das ist das erste Video zu" + termToSearch)
             speaker.runAndWait()
+        
+        
         # calculate said equasion
-        case "rechner":      
+        case "rechner":
+            # split said term to better define the operation       
             termSplittet = term.split(" ")
-            for word in termSplittet:
-                print("bruh")
+
+            # if-elif operation to make wanted operation
+            # get position of operation that is to be calculatet, use position before and after operation, to get the two numbers
+            # calculate a result and tell it to the user 
             if "plus" in term:
-                print("bruh")
+                operationPos = termSplittet.index("plus")
+                firstNum = termSplittet[operationPos-1]
+                secondNum = termSplittet[operationPos+1]
+
+                result = int(firstNum) + int(secondNum)
+
+                speaker.say(f"Das Ergebnis von {firstNum} plus {secondNum} ergibt {result}")
+                speaker.runAndWait()
+
+
             elif "minus" in term:
-                print("bruh")
+                operationPos = termSplittet.index("minus")
+                firstNum = termSplittet[operationPos-1]
+                secondNum = termSplittet[operationPos+1]
+
+                result = int(firstNum) - int(secondNum)
+
+                speaker.say(f"Das Ergebnis von {firstNum} minus {secondNum} ergibt {result}")
+                speaker.runAndWait()
+
+
             elif "dividiert durch" in term:
-                print("bruh")
+                operationPos = termSplittet.index("dividiert durch")
+                firstNum = termSplittet[operationPos-1]
+                secondNum = termSplittet[operationPos+1]
+
+                result = int(firstNum) / int(secondNum)
+
+                speaker.say(f"Das Ergebnis von {firstNum} dividiert durch {secondNum} ergibt {result}")
+                speaker.runAndWait()
+
+
+            elif "durch" in term:
+                operationPos = termSplittet.index("durch")
+                firstNum = termSplittet[operationPos-1]
+                secondNum = termSplittet[operationPos+1]
+
+                result = int(firstNum) / int(secondNum)
+
+                speaker.say(f"Das Ergebnis von {firstNum} dividiert durch {secondNum} ergibt {result}")
+                speaker.runAndWait()
+
+
+
             elif "mal" in term:
-                print("bruh")
+                operationPos = termSplittet.index("mal")
+                firstNum = termSplittet[operationPos-1]
+                secondNum = termSplittet[operationPos+1]
+
+                result = int(firstNum) * int(secondNum)
+
+                speaker.say(f"Das Ergebnis von {firstNum} multipliziert mit {secondNum} ergibt {result}")
+                speaker.runAndWait()
+
+
+            
+            elif "multipliziert mit" in term:
+                operationPos = termSplittet.index("multipliziert mit")
+                firstNum = termSplittet[operationPos-1]
+                secondNum = termSplittet[operationPos+1]
+
+                result = int(firstNum) * int(secondNum)
+
+                speaker.say(f"Das Ergebnis von {firstNum} multipliziert mit {secondNum} ergibt {result}")
+                speaker.runAndWait()
+
+
         # read summary of wikipedia article
-        case "wikipedia":                                                                   
+        case "wikipedia":         
+            # set the language and get the first 250 characters of wikipedia page, if it exists                                                          
             wiki_wiki = wikipediaapi.Wikipedia('de')
-            page_py = wiki_wiki.page('HTL Wien West')
+            page_py = wiki_wiki.page(termToSearch)
             if page_py.exists() == True: 
-                print(page_py.summary[0:500])
+                speaker.say(page_py.summary[0:250])
+                speaker.runAndWait()
+
+                # ask user if they want to open the wikipedia page, if first 250 characters was not enough
+                speaker.say(f"Wenn du mehr dazu hören willst, kann ich gerne die Wikipedia Seite zu {termToSearch} öffnen")
+                speaker.runAndWait()
+                
+                print("Warte auf antwort.")
+                # listen via microphone
+                with sr.Microphone() as source:
+                    listener.adjust_for_ambient_noise(source, duration=1)   # adjustment of the listener, to cut out ambient noise
+                    voice = listener.listen(source)
+
+                # get users answer
+                answer = " " + listener.recognize_google(voice, language="de-AT") +  " ".lower()
+                print(answer)
+
+                query = "select k.phrase from keyphrases k join altphrases a on k.id = a.fid where a.phrase = '" + answer + "'"
+                cur.execute(query)
+                keyphrase = [r[0] for r in cur.fetchall()]
+
+                # open the according wikipedia page, if user wants to
+                if keyphrase[0] == "ja":
+                    termToSearch = termToSearch.title()
+                    termForWikipedia = termToSearch.replace(" ", "_")
+                    google_link = "https://de.wikipedia.org/wiki/" + termForWikipedia
+                    webbrowser.open(google_link)
+
+            # tell the user, if the searched wikipedia page was not found        
             else:
-                print("Diesen Artikel gibt es leider nicht")
+                speaker.say(f"Zu diesem Thema habe ich leider keine Wikipedia Seite finden können.")
+                speaker.runAndWait()
+                
+
         # default no command
         case _:
             print("Kein Befehl")
