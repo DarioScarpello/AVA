@@ -11,7 +11,15 @@ import re
 # for AI predicting
 import pandas
 import matplotlib.pyplot as plt
+from sklearn.linear_model import LinearRegression
 
+data = pandas.read_csv('schuljahr_schueler.csv')
+plt.scatter(data['schuljahr'], data['schueleranzahl'])
+plt.show()
+model = LinearRegression()
+model.fit(data[['schuljahr']], data[['schueleranzahl']])
+prediction = model.predict([[1]])
+print(prediction)
 
 #tts
 speaker = pyttsx3.init()
