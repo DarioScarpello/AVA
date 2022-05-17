@@ -39,6 +39,32 @@ $$;
 ALTER FUNCTION public.add_altphrase(altphrase character varying, tokeyphrase character varying) OWNER TO postgres;
 
 --
+-- Name: createnewplan(character varying, integer); Type: FUNCTION; Schema: public; Owner: postgres
+--
+
+CREATE FUNCTION public.createnewplan(notiz character varying, userid integer) RETURNS character varying
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+    insert into Trainingsplan (Notiz, ID)
+    VALUES (notiz, userID);
+
+    return 'Trainingsplan erfolgreich erstellt!';
+
+exception
+    when FOREIGN_KEY_VIOLATION THEN
+        return 'Dieser Nutzer existiert nicht!';
+
+    when string_data_right_truncation then
+        return 'Notiz ist zu lang!';
+
+END;
+$$;
+
+
+ALTER FUNCTION public.createnewplan(notiz character varying, userid integer) OWNER TO postgres;
+
+--
 -- Name: get_keyphrase(character varying); Type: FUNCTION; Schema: public; Owner: postgres
 --
 
@@ -78,6 +104,47 @@ SET default_tablespace = '';
 SET default_table_access_method = heap;
 
 --
+-- Name: nutzer_in; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.nutzer_in (
+    id integer NOT NULL,
+    nutzername character varying(25) NOT NULL,
+    vorname character varying(20),
+    nachname character varying(20)
+);
+
+
+ALTER TABLE public.nutzer_in OWNER TO postgres;
+
+--
+-- Name: trainingsplan; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.trainingsplan (
+    plan_id integer NOT NULL,
+    titel character varying(50) NOT NULL,
+    notiz character varying(150) NOT NULL,
+    id integer NOT NULL
+);
+
+
+ALTER TABLE public.trainingsplan OWNER TO postgres;
+
+--
+-- Name: allplans; Type: VIEW; Schema: public; Owner: postgres
+--
+
+CREATE VIEW public.allplans AS
+ SELECT trainingsplan.titel AS plan,
+    ni.nutzername AS account
+   FROM (public.trainingsplan
+     JOIN public.nutzer_in ni ON ((trainingsplan.id = ni.id)));
+
+
+ALTER TABLE public.allplans OWNER TO postgres;
+
+--
 -- Name: altphrases; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -111,6 +178,33 @@ ALTER TABLE public.altphrases_id_seq OWNER TO postgres;
 
 ALTER SEQUENCE public.altphrases_id_seq OWNED BY public.altphrases.id;
 
+
+--
+-- Name: beinhaltet; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.beinhaltet (
+    plan_id integer NOT NULL,
+    uebungs_id integer NOT NULL
+);
+
+
+ALTER TABLE public.beinhaltet OWNER TO postgres;
+
+--
+-- Name: fuehrt_durch; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.fuehrt_durch (
+    saetze integer NOT NULL,
+    wiederholunge integer NOT NULL,
+    gewichtkg numeric NOT NULL,
+    id integer NOT NULL,
+    uebungs_id integer NOT NULL
+);
+
+
+ALTER TABLE public.fuehrt_durch OWNER TO postgres;
 
 --
 -- Name: keyphrases; Type: TABLE; Schema: public; Owner: postgres
@@ -147,6 +241,85 @@ ALTER SEQUENCE public.keyphrases_id_seq OWNED BY public.keyphrases.id;
 
 
 --
+-- Name: nutzer_in_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.nutzer_in_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.nutzer_in_id_seq OWNER TO postgres;
+
+--
+-- Name: nutzer_in_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.nutzer_in_id_seq OWNED BY public.nutzer_in.id;
+
+
+--
+-- Name: trainingsplan_plan_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.trainingsplan_plan_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.trainingsplan_plan_id_seq OWNER TO postgres;
+
+--
+-- Name: trainingsplan_plan_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.trainingsplan_plan_id_seq OWNED BY public.trainingsplan.plan_id;
+
+
+--
+-- Name: uebung; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.uebung (
+    uebungs_id integer NOT NULL,
+    bezeichnung character varying(30) NOT NULL,
+    durchfuehrungsbeschreibung character varying(350) NOT NULL
+);
+
+
+ALTER TABLE public.uebung OWNER TO postgres;
+
+--
+-- Name: uebung_uebungs_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.uebung_uebungs_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.uebung_uebungs_id_seq OWNER TO postgres;
+
+--
+-- Name: uebung_uebungs_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.uebung_uebungs_id_seq OWNED BY public.uebung.uebungs_id;
+
+
+--
 -- Name: altphrases id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
@@ -158,6 +331,27 @@ ALTER TABLE ONLY public.altphrases ALTER COLUMN id SET DEFAULT nextval('public.a
 --
 
 ALTER TABLE ONLY public.keyphrases ALTER COLUMN id SET DEFAULT nextval('public.keyphrases_id_seq'::regclass);
+
+
+--
+-- Name: nutzer_in id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.nutzer_in ALTER COLUMN id SET DEFAULT nextval('public.nutzer_in_id_seq'::regclass);
+
+
+--
+-- Name: trainingsplan plan_id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.trainingsplan ALTER COLUMN plan_id SET DEFAULT nextval('public.trainingsplan_plan_id_seq'::regclass);
+
+
+--
+-- Name: uebung uebungs_id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.uebung ALTER COLUMN uebungs_id SET DEFAULT nextval('public.uebung_uebungs_id_seq'::regclass);
 
 
 --
@@ -213,8 +407,24 @@ COPY public.altphrases (id, phrase, fid) FROM stdin;
 53	 suche bitte auf youtube nach 	7
 54	 such bitte auf youtube nach 	7
 55	 ja bitte 	1
-56	 wieviel ist 	9
 57	 was ergibt 	9
+56	 wie viel ist 	9
+\.
+
+
+--
+-- Data for Name: beinhaltet; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.beinhaltet (plan_id, uebungs_id) FROM stdin;
+\.
+
+
+--
+-- Data for Name: fuehrt_durch; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.fuehrt_durch (saetze, wiederholunge, gewichtkg, id, uebungs_id) FROM stdin;
 \.
 
 
@@ -239,6 +449,30 @@ COPY public.keyphrases (id, phrase) FROM stdin;
 
 
 --
+-- Data for Name: nutzer_in; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.nutzer_in (id, nutzername, vorname, nachname) FROM stdin;
+\.
+
+
+--
+-- Data for Name: trainingsplan; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.trainingsplan (plan_id, titel, notiz, id) FROM stdin;
+\.
+
+
+--
+-- Data for Name: uebung; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.uebung (uebungs_id, bezeichnung, durchfuehrungsbeschreibung) FROM stdin;
+\.
+
+
+--
 -- Name: altphrases_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
@@ -253,6 +487,27 @@ SELECT pg_catalog.setval('public.keyphrases_id_seq', 12, true);
 
 
 --
+-- Name: nutzer_in_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.nutzer_in_id_seq', 1, false);
+
+
+--
+-- Name: trainingsplan_plan_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.trainingsplan_plan_id_seq', 1, false);
+
+
+--
+-- Name: uebung_uebungs_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.uebung_uebungs_id_seq', 1, false);
+
+
+--
 -- Name: altphrases altphrases_pk; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -261,11 +516,59 @@ ALTER TABLE ONLY public.altphrases
 
 
 --
+-- Name: beinhaltet beinhaltet_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.beinhaltet
+    ADD CONSTRAINT beinhaltet_pkey PRIMARY KEY (plan_id, uebungs_id);
+
+
+--
+-- Name: fuehrt_durch fuehrt_durch_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.fuehrt_durch
+    ADD CONSTRAINT fuehrt_durch_pkey PRIMARY KEY (id, uebungs_id);
+
+
+--
 -- Name: keyphrases keyphrases_pk; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.keyphrases
     ADD CONSTRAINT keyphrases_pk PRIMARY KEY (id);
+
+
+--
+-- Name: nutzer_in nutzer_in_nutzername_key; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.nutzer_in
+    ADD CONSTRAINT nutzer_in_nutzername_key UNIQUE (nutzername);
+
+
+--
+-- Name: nutzer_in nutzer_in_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.nutzer_in
+    ADD CONSTRAINT nutzer_in_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: trainingsplan trainingsplan_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.trainingsplan
+    ADD CONSTRAINT trainingsplan_pkey PRIMARY KEY (plan_id);
+
+
+--
+-- Name: uebung uebung_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.uebung
+    ADD CONSTRAINT uebung_pkey PRIMARY KEY (uebungs_id);
 
 
 --
@@ -281,6 +584,46 @@ CREATE UNIQUE INDEX altphrases_id_uindex ON public.altphrases USING btree (id);
 
 ALTER TABLE ONLY public.altphrases
     ADD CONSTRAINT altphrases_keyphrases_id_fk FOREIGN KEY (fid) REFERENCES public.keyphrases(id);
+
+
+--
+-- Name: beinhaltet beinhaltet_plan_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.beinhaltet
+    ADD CONSTRAINT beinhaltet_plan_id_fkey FOREIGN KEY (plan_id) REFERENCES public.trainingsplan(plan_id);
+
+
+--
+-- Name: beinhaltet beinhaltet_uebungs_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.beinhaltet
+    ADD CONSTRAINT beinhaltet_uebungs_id_fkey FOREIGN KEY (uebungs_id) REFERENCES public.uebung(uebungs_id);
+
+
+--
+-- Name: fuehrt_durch fuehrt_durch_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.fuehrt_durch
+    ADD CONSTRAINT fuehrt_durch_id_fkey FOREIGN KEY (id) REFERENCES public.nutzer_in(id);
+
+
+--
+-- Name: fuehrt_durch fuehrt_durch_uebungs_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.fuehrt_durch
+    ADD CONSTRAINT fuehrt_durch_uebungs_id_fkey FOREIGN KEY (uebungs_id) REFERENCES public.uebung(uebungs_id);
+
+
+--
+-- Name: trainingsplan trainingsplan_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.trainingsplan
+    ADD CONSTRAINT trainingsplan_id_fkey FOREIGN KEY (id) REFERENCES public.nutzer_in(id);
 
 
 --

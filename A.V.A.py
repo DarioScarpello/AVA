@@ -8,6 +8,11 @@ import urllib.parse
 import wikipediaapi
 import re
 
+# for AI predicting
+import pandas
+import matplotlib.pyplot as plt
+
+
 #tts
 speaker = pyttsx3.init()
 
@@ -33,7 +38,7 @@ print("Listenting...")
 # listen via microphone
 with sr.Microphone() as source:
     listener.adjust_for_ambient_noise(source, duration=1)   # adjustment of the listener, to cut out ambient noise
-    voice = listener.listen(source)
+    voice = listener.listen(source, phrase_time_limit=10)
 
 
 # try catch block to give out error message, to filter out exceptions 
@@ -172,8 +177,8 @@ try:
 
 
 
-            elif "mal" in term:
-                operationPos = termSplittet.index("mal")
+            elif "x" in term:
+                operationPos = termSplittet.index("x")
                 firstNum = termSplittet[operationPos-1]
                 secondNum = termSplittet[operationPos+1]
 
