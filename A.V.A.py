@@ -1,45 +1,46 @@
 from email.policy import default
+
+# speechrecognition library for speechrecognition
 import speech_recognition as sr
+
+# Text to speach library for tts
 import pyttsx3
+
+# webbrowser library for working with webbrowsers
 import webbrowser
+
+# psycopg2 library for working with databases
 import psycopg2
+
+# wikipediaapi library for working with wikipedia
+import wikipediaapi
+
+# regular expression library to work with regex
+import re
 import urllib.request
 import urllib.parse
-import wikipediaapi
-import re
 
+# pandas, pyplot, sklearn librarys for simple prediction
 import pandas
 import matplotlib.pyplot as plt
 from sklearn.linear_model import LinearRegression
 
+# decouple library for working with environment variables
+from decouple import config
 
-
-#tts
+# create speaker object
 speaker = pyttsx3.init()
 
 
-# # for AI predictingd
-# satz = "Wieviele Schüler gibt es in 4 Jahren an der Schule"
-# term = satz.split(" ")
-# data = pandas.read_csv('schuljahr_schueler.csv')
-# plt.scatter(data['schuljahr'], data['schueleranzahl'])
-# plt.show()
-# model = LinearRegression()
-# model.fit(data[['schuljahr']], data[['schueleranzahl']])
-# jahrPos = term.index("Jahren")
-# anzahlJahre = term[jahrPos-1]
-# anzahl = int(anzahlJahre)
-# prediction = model.predict([[anzahl]])
-# anzahlSchueler = round(prediction[0][0])
-# print(f"In {anzahlJahre} Jahren gibt es voraussichtlich {anzahlSchueler} Schüler*innen an der Schule.")
+# getting credentials from environment variables for the database
+db_name = config('db_name')
+db_user = config('db_user')
+db_pass = config('db_pass')
 
 
-
-# speaker.say('Hallo ich rede')
-# speaker.runAndWait()
 
 # Creating the connection via the connection string to the database and the cursor to fetch the data 
-connection = psycopg2.connect("dbname=AVA user=postgres password=postgres") # Connectionstring verbergen !!!
+connection = psycopg2.connect(f"dbname={db_name} user={db_user} password={db_pass}") # Connectionstring verbergen !!!
 cur = connection.cursor()
 
 # the query that gets all the altphrases, which will be used throughout the whole program
@@ -95,9 +96,11 @@ try:
 
             break
 
-    print(keyphrase[0]) 
+
+    print(f"Said term = {term}")
+
+    print(f"Triggered keyphrase = {keyphrase[0]}") 
     
-    print(term)
 
 
 
@@ -262,6 +265,25 @@ try:
                 speaker.say(f"Zu diesem Thema habe ich leider keine Wikipedia Seite finden können.")
                 speaker.runAndWait()
                 
+
+        # AI prediction
+        case "prediction":
+            termSplittet = term.split(" ")
+
+            data = pandas.read_csv('schuljahr_schueler.csv')
+            # plt.scatter(data['schuljahr'], data['schueleranzahl'])
+            # plt.show()
+            model = LinearRegression()
+            model.fit(data[['schuljahr']], data[['schueleranzahl']])
+            jahrPos = termSplittet.index("Jahren")
+            anzahlJahre = termSplittet[jahrPos-1]
+            anzahl = int(anzahlJahre)
+            prediction = model.predict([[anzahl]])
+            anzahlSchueler = round(prediction[0][0])
+            print(f"In {anzahlJahre} Jahren gibt es voraussichtlich {anzahlSchueler} Schüler*innen an der Schule.")
+            speaker.say(f"In {anzahlJahre} Jahren gibt es voraussichtlich {anzahlSchueler} Schüler*innen an der Schule.")
+            speaker.runAndWait()
+
 
         # default no command
         case _:
