@@ -8,21 +8,32 @@ import urllib.parse
 import wikipediaapi
 import re
 
-# for AI predicting
 import pandas
 import matplotlib.pyplot as plt
 from sklearn.linear_model import LinearRegression
 
-data = pandas.read_csv('schuljahr_schueler.csv')
-plt.scatter(data['schuljahr'], data['schueleranzahl'])
-plt.show()
-model = LinearRegression()
-model.fit(data[['schuljahr']], data[['schueleranzahl']])
-prediction = model.predict([[1]])
-print(prediction)
+
 
 #tts
 speaker = pyttsx3.init()
+
+
+# # for AI predictingd
+# satz = "Wieviele Schüler gibt es in 4 Jahren an der Schule"
+# term = satz.split(" ")
+# data = pandas.read_csv('schuljahr_schueler.csv')
+# plt.scatter(data['schuljahr'], data['schueleranzahl'])
+# plt.show()
+# model = LinearRegression()
+# model.fit(data[['schuljahr']], data[['schueleranzahl']])
+# jahrPos = term.index("Jahren")
+# anzahlJahre = term[jahrPos-1]
+# anzahl = int(anzahlJahre)
+# prediction = model.predict([[anzahl]])
+# anzahlSchueler = round(prediction[0][0])
+# print(f"In {anzahlJahre} Jahren gibt es voraussichtlich {anzahlSchueler} Schüler*innen an der Schule.")
+
+
 
 # speaker.say('Hallo ich rede')
 # speaker.runAndWait()
@@ -41,7 +52,7 @@ altphrases = [r[0] for r in cur.fetchall()] 	# the tuple is converted into a nor
 #stt
 listener = sr.Recognizer()      # defining the listener object
 
-print("Listenting...")
+print("Listening...")
 
 # listen via microphone
 with sr.Microphone() as source:
@@ -87,6 +98,10 @@ try:
     print(keyphrase[0]) 
     
     print(term)
+
+
+
+    
 
     # switch-case to get the correct code via command
     match keyphrase[0]:
