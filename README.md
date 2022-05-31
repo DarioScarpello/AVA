@@ -9,7 +9,7 @@ AVA ist ein Voice Assistant der in Python geschrieben wurde.
 - Google Suchen
 - Wikipedia Artikel vorlesen lassen
 - Wetter Suchen
-- Rechnen
+- Simple Rechnungen rechnen
 - Google Classroom aufrufen
 - Die Noch zu erledigen Seite auf Google Classroom aufrufen
 - Lineare Regression berechenen.
