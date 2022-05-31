@@ -132,42 +132,41 @@ try:
 
     print(f"Triggered keyphrase = {keyphrase[0]}") 
     
+    def openWebsite(link, voiceAnswer, is_extreTerm: bool ):
+        if is_extreTerm:
+            google_link = link + termToSearch
+            webbrowser.open(google_link)
+            speaker.say(voiceAnswer)
+            speaker.runAndWait()
+
+        else:
+            webbrowser.open('https://classroom.google.com/u/1/h')
+            speaker.say("Ich habe Google Classroom für dich geöffnet")
+            speaker.runAndWait()
+            
+
     # switch-case to get the correct code via command
     match keyphrase[0]:
         # google search
         case "google":
-            google_link = "https://www.google.com/search?q=" + termToSearch
-            webbrowser.open(google_link)
-            speaker.say(f"Das habe ich im Internet zu {termToSearch} gefunden.")
-            speaker.runAndWait()
+            openWebsite("https://www.google.com/search?q=", f"Das habe ich im Internet zu {termToSearch} gefunden.", True)
 
         case "wetter":
-            google_link = "https://www.google.com/search?q=Wetter " + termToSearch
-            webbrowser.open(google_link)
-            speaker.say(f"Das ist das Wetter in {termToSearch}.")
-            speaker.runAndWait()
-
+            openWebsite("https://www.google.com/search?q=Wetter ", f"Das ist das Wetter in {termToSearch}.", True)
         
         # open google classroom
         case "classroom":
-            webbrowser.open('https://classroom.google.com/u/1/h')
-            speaker.say("Ich habe Google Classroom für dich geöffnet")
-            speaker.runAndWait()
+            openWebsite('https://classroom.google.com/u/1/h', "Ich habe Google Classroom für dich geöffnet", False)
         
         
         # open the not finished tasks in google classroom
         case "erledigen":
-            webbrowser.open('https://classroom.google.com/u/1/a/not-turned-in/all')
-            speaker.say("Diese Sachen hast du noch zu erledigen")
-            speaker.runAndWait()
-        
+            openWebsite('https://classroom.google.com/u/1/a/not-turned-in/all', "Diese Sachen hast du noch zu erledigen", False)
+
         
         # search on youtube
         case "youtube":
-            youtube_link = "https://www.youtube.com/results?search_query=" + termToSearch
-            webbrowser.open(youtube_link)
-            speaker.say("Das hab ich auf Youtube gefunden")
-            speaker.runAndWait()
+            openWebsite("https://www.youtube.com/results?search_query=", "Das hab ich auf Youtube gefunden", False)
         
         
         # open first video on yoututbe
