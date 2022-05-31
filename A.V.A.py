@@ -67,7 +67,7 @@ with sr.Microphone() as source:
 try:
     # recognize said words via google recognizer API
     # add whitespace before and after said term, to match the data in database
-    saidterm = " " + listener.recognize_google(voice, language="de-AT") +  " "
+    saidterm = " wetter Wien " #" " + listener.recognize_google(voice, language="de-AT") +  " "
     term = saidterm.lower()
     
     # go over every altphrase
@@ -81,33 +81,59 @@ try:
 
             # if it is a google search, create the term to search 
             # create a variable for the phrase to search by in the query
-            if keyphrase[0] == "google":
-                termToSearch = term.replace(phrase, "")
-                break
 
-            # if it is a youtube search, create the term to search
-            # create a variable for the phrase to search by in the query
-            elif keyphrase[0] == "youtube": 
-                termToSearch = term.replace(phrase, "")
-                break
 
-            elif keyphrase[0] == "youtube abspielen":
-                termToSearch = term.replace(phrase, "")
-                break
+            match keyphrase[0]:
+                case "google": 
+                    termToSearch = term.replace(phrase, "")
+                    break
+                
+                case "youtube":
+                    termToSearch = term.replace(phrase, "")
+                    break
 
-            # if it is a youtube search, create the term to search
-            # create a variable for the phrase to search by in the query
-            elif keyphrase[0] == "wikipedia":
-                termToSearch = term.replace(phrase, "")
-                break
-            
-            # if it is a weather search, create the term to search
-            # create a variable for the phrase to search by in the query
-            elif keyphrase[0] == "wetter":
-                termToSearch = term.replace(phrase, "")
-                break
-
+                case "youtube abspielen":
+                    termToSearch = term.replace(phrase, "")
+                    break
+                
+                case "wikipedia":
+                    termToSearch = term.replace(phrase, "")
+                    break
+                
+                case "wetter":
+                    termToSearch = term.replace(phrase, "")
+                    break
             break
+
+
+
+            # if keyphrase[0] == "google":
+            #     termToSearch = term.replace(phrase, "")
+            #     break
+
+            # # if it is a youtube search, create the term to search
+            # # create a variable for the phrase to search by in the query
+            # elif keyphrase[0] == "youtube": 
+            #     termToSearch = term.replace(phrase, "")
+            #     break
+
+            # elif keyphrase[0] == "youtube abspielen":
+            #     termToSearch = term.replace(phrase, "")
+            #     break
+
+            # # if it is a youtube search, create the term to search
+            # # create a variable for the phrase to search by in the query
+            # elif keyphrase[0] == "wikipedia":
+            #     termToSearch = term.replace(phrase, "")
+            #     break
+            
+            # # if it is a weather search, create the term to search
+            # # create a variable for the phrase to search by in the query
+            # elif keyphrase[0] == "wetter":
+            #     termToSearch = term.replace(phrase, "")
+            #     break
+
+            # break
 
 
     print(f"Said term = {term}")
