@@ -87,7 +87,11 @@ try:
 
             # if it is a youtube search, create the term to search
             # create a variable for the phrase to search by in the query
-            elif keyphrase[0] == "youtube" or keyphrase[0] == "youtube abspielen":
+            elif keyphrase[0] == "youtube": 
+                termToSearch = term.replace(phrase, "")
+                break
+
+            elif keyphrase[0] == "youtube abspielen":
                 termToSearch = term.replace(phrase, "")
                 break
 
