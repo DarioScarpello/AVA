@@ -1,7 +1,5 @@
 from email.policy import default
 
-import os
-
 # speechrecognition library for speechrecognition
 import speech_recognition as sr
 
