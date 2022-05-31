@@ -79,10 +79,7 @@ try:
             cur.execute(query)
             keyphrase = [r[0] for r in cur.fetchall()]
 
-            # if it is a google search, create the term to search 
-            # create a variable for the phrase to search by in the query
-
-
+            # Case Statement for cutting out termToSearch
             match keyphrase[0]:
                 case "google": 
                     termToSearch = term.replace(phrase, "")
