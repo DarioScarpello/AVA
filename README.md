@@ -1,7 +1,7 @@
 # AVA
 Unser tolles AVA Projekt!!!!!! 🤯🤖💀
 
-AVA ist ein Voice Assistant der in Python geschrieben wurde.
+AVA (Amazing Voice Assistant) ist ein Voice Assistant der in Python geschrieben wurde. 
 
 ### Features
 - Youtube Videos abspielen
