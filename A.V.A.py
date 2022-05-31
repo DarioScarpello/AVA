@@ -67,7 +67,7 @@ with sr.Microphone() as source:
 try:
     # recognize said words via google recognizer API
     # add whitespace before and after said term, to match the data in database
-    saidterm = " wetter Wien " #" " + listener.recognize_google(voice, language="de-AT") +  " "
+    saidterm = " " + listener.recognize_google(voice, language="de-AT") +  " "
     term = saidterm.lower()
     
     # go over every altphrase
@@ -104,9 +104,7 @@ try:
                     termToSearch = term.replace(phrase, "")
                     break
             break
-
-
-
+        
             # if keyphrase[0] == "google":
             #     termToSearch = term.replace(phrase, "")
             #     break
