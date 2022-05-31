@@ -1,5 +1,7 @@
 from email.policy import default
 
+import os
+
 # speechrecognition library for speechrecognition
 import speech_recognition as sr
 
@@ -58,14 +60,15 @@ print("Listening...")
 # listen via microphone
 with sr.Microphone() as source:
     listener.adjust_for_ambient_noise(source, duration=1)   # adjustment of the listener, to cut out ambient noise
-    voice = listener.listen(source, phrase_time_limit=10)
+    voice = listener.listen(source, phrase_time_limit=5)
 
 
 # try catch block to give out error message, to filter out exceptions 
 try:
     # recognize said words via google recognizer API
     # add whitespace before and after said term, to match the data in database
-    term = " " + listener.recognize_google(voice, language="de-AT") +  " ".lower()
+    saidterm = " " + listener.recognize_google(voice, language="de-AT") +  " "
+    term = saidterm.lower()
     
     # go over every altphrase
     for phrase in altphrases:   
@@ -83,14 +86,20 @@ try:
                 break
 
             # if it is a youtube search, create the term to search
-            # create a a variable for the phrase to search by in the query
+            # create a variable for the phrase to search by in the query
             elif keyphrase[0] == "youtube" or keyphrase[0] == "youtube abspielen":
                 termToSearch = term.replace(phrase, "")
                 break
 
             # if it is a youtube search, create the term to search
-            # create a a variable for the phrase to search by in the query
+            # create a variable for the phrase to search by in the query
             elif keyphrase[0] == "wikipedia":
+                termToSearch = term.replace(phrase, "")
+                break
+            
+            # if it is a weather search, create the term to search
+            # create a variable for the phrase to search by in the query
+            elif keyphrase[0] == "wetter":
                 termToSearch = term.replace(phrase, "")
                 break
 
@@ -101,11 +110,6 @@ try:
 
     print(f"Triggered keyphrase = {keyphrase[0]}") 
     
-
-
-
-    
-
     # switch-case to get the correct code via command
     match keyphrase[0]:
         # google search
@@ -113,6 +117,12 @@ try:
             google_link = "https://www.google.com/search?q=" + termToSearch
             webbrowser.open(google_link)
             speaker.say(f"Das habe ich im Internet zu {termToSearch} gefunden.")
+            speaker.runAndWait()
+
+        case "wetter":
+            google_link = "https://www.google.com/search?q=Wetter " + termToSearch
+            webbrowser.open(google_link)
+            speaker.say(f"Das ist das Wetter in {termToSearch}.")
             speaker.runAndWait()
 
         
