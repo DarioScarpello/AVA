@@ -104,7 +104,7 @@ try:
                     termToSearch = term.replace(phrase, "")
                     break
             break
-        
+
             # if keyphrase[0] == "google":
             #     termToSearch = term.replace(phrase, "")
             #     break
@@ -132,7 +132,6 @@ try:
             #     break
 
             # break
-
 
     print(f"Said term = {term}")
 
