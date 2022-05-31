@@ -1,4 +1,7 @@
+from ast import operator
 from email.policy import default
+import string
+from tokenize import String
 
 # speechrecognition library for speechrecognition
 import speech_recognition as sr
@@ -145,6 +148,22 @@ try:
             speaker.runAndWait()
             
 
+
+
+    # def calculation(operator):
+    #     match operator:
+    #         case "plus":
+    #             operationPos = termSplittet.index(operator)
+    #             firstNum = termSplittet[operationPos-1]
+    #             secondNum = termSplittet[operationPos+1]
+
+    #             result = int(firstNum) + int(secondNum)
+
+    #             speaker.say(f"Das Ergebnis von {firstNum} plus {secondNum} ergibt {result}")
+    #             speaker.runAndWait()
+            
+            
+
     # switch-case to get the correct code via command
     match keyphrase[0]:
         # google search
@@ -179,8 +198,10 @@ try:
                 webbrowser.open("http://www.youtube.com/watch?v={}".format(search_results[0]))
             speaker.say("Das ist das erste Video zu" + termToSearch)
             speaker.runAndWait()
-        
-        
+
+
+            
+
         # calculate said equasion
         case "rechner":
             # split said term to better define the operation       
