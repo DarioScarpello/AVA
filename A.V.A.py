@@ -135,32 +135,64 @@ try:
 
     print(f"Triggered keyphrase = {keyphrase[0]}") 
     
-    def openWebsite(link, voiceAnswer, is_extreTerm: bool ):
-        if is_extreTerm:
+    # function to open websites
+    # bool parameter to say if there is an extra term to search by
+    def openWebsite(link, voiceAnswer, is_extraTerm: bool ):
+        if is_extraTerm:
             google_link = link + termToSearch
             webbrowser.open(google_link)
             speaker.say(voiceAnswer)
             speaker.runAndWait()
 
         else:
-            webbrowser.open('https://classroom.google.com/u/1/h')
-            speaker.say("Ich habe Google Classroom für dich geöffnet")
+            webbrowser.open(link)
+            speaker.say(voiceAnswer)
             speaker.runAndWait()
             
+    # function for calculation
+    def calculate(splittetTerm, operator):
+        # get position of operator in term to get the two numbers to calculate
+        operationPos = splittetTerm.index(operator)
+        firstNum = splittetTerm[operationPos-1]
+        secondNum = splittetTerm[operationPos+1]
+
+        # do the correct operation depending on the said operator
+        match operator:
+            case "plus":
+                result = int(firstNum) + int(secondNum)
+                speaker.say(f"Das Ergebnis von {firstNum} plus {secondNum} ergibt {result}")
+
+            case "minus":
+                result = int(firstNum) - int(secondNum)
+                speaker.say(f"Das Ergebnis von {firstNum} minus {secondNum} ergibt {result}")
+
+            case "mal":
+                result = int(firstNum) * int(secondNum)
+                speaker.say(f"Das Ergebnis von {firstNum} multipliziert mit {secondNum} ergibt {result}")
+
+            case "multipliziert mit":
+                result = int(firstNum) * int(secondNum)
+                speaker.say(f"Das Ergebnis von {firstNum} multipliziert mit {secondNum} ergibt {result}")
+
+            case "x":
+                result = int(firstNum) * int(secondNum)
+                speaker.say(f"Das Ergebnis von {firstNum} multipliziert mit {secondNum} ergibt {result}")
+
+            case "diviert durch":
+                result = int(firstNum) / int(secondNum)
+                speaker.say(f"Das Ergebnis von {firstNum} dividiert durch {secondNum} ergibt {result}")
+
+            case "durch":
+                result = int(firstNum) / int(secondNum)
+                speaker.say(f"Das Ergebnis von {firstNum} dividiert durch {secondNum} ergibt {result}")
+        
+        speaker.runAndWait()
+
+                
 
 
 
-    # def calculation(operator):
-    #     match operator:
-    #         case "plus":
-    #             operationPos = termSplittet.index(operator)
-    #             firstNum = termSplittet[operationPos-1]
-    #             secondNum = termSplittet[operationPos+1]
-
-    #             result = int(firstNum) + int(secondNum)
-
-    #             speaker.say(f"Das Ergebnis von {firstNum} plus {secondNum} ergibt {result}")
-    #             speaker.runAndWait()
+   
             
             
 
@@ -207,76 +239,28 @@ try:
             # split said term to better define the operation       
             termSplittet = term.split(" ")
 
-            # if-elif operation to make wanted operation
-            # get position of operation that is to be calculatet, use position before and after operation, to get the two numbers
-            # calculate a result and tell it to the user 
             if "plus" in term:
-                operationPos = termSplittet.index("plus")
-                firstNum = termSplittet[operationPos-1]
-                secondNum = termSplittet[operationPos+1]
-
-                result = int(firstNum) + int(secondNum)
-
-                speaker.say(f"Das Ergebnis von {firstNum} plus {secondNum} ergibt {result}")
-                speaker.runAndWait()
-
+                operator = "plus"
 
             elif "minus" in term:
-                operationPos = termSplittet.index("minus")
-                firstNum = termSplittet[operationPos-1]
-                secondNum = termSplittet[operationPos+1]
-
-                result = int(firstNum) - int(secondNum)
-
-                speaker.say(f"Das Ergebnis von {firstNum} minus {secondNum} ergibt {result}")
-                speaker.runAndWait()
-
+                operator = "minus"
 
             elif "dividiert durch" in term:
-                operationPos = termSplittet.index("dividiert durch")
-                firstNum = termSplittet[operationPos-1]
-                secondNum = termSplittet[operationPos+1]
-
-                result = int(firstNum) / int(secondNum)
-
-                speaker.say(f"Das Ergebnis von {firstNum} dividiert durch {secondNum} ergibt {result}")
-                speaker.runAndWait()
-
+                operator = "dividiert durch"
 
             elif "durch" in term:
-                operationPos = termSplittet.index("durch")
-                firstNum = termSplittet[operationPos-1]
-                secondNum = termSplittet[operationPos+1]
-
-                result = int(firstNum) / int(secondNum)
-
-                speaker.say(f"Das Ergebnis von {firstNum} dividiert durch {secondNum} ergibt {result}")
-                speaker.runAndWait()
-
-
+                operator = "durch"
 
             elif "x" in term:
-                operationPos = termSplittet.index("x")
-                firstNum = termSplittet[operationPos-1]
-                secondNum = termSplittet[operationPos+1]
-
-                result = int(firstNum) * int(secondNum)
-
-                speaker.say(f"Das Ergebnis von {firstNum} multipliziert mit {secondNum} ergibt {result}")
-                speaker.runAndWait()
-
-
+                operator = "x"
             
             elif "multipliziert mit" in term:
-                operationPos = termSplittet.index("multipliziert mit")
-                firstNum = termSplittet[operationPos-1]
-                secondNum = termSplittet[operationPos+1]
+                operator = "multipliziert mit"
 
-                result = int(firstNum) * int(secondNum)
+            elif "mal" in term:
+                operator = "mal"
 
-                speaker.say(f"Das Ergebnis von {firstNum} multipliziert mit {secondNum} ergibt {result}")
-                speaker.runAndWait()
-
+            calculate(termSplittet, operator)
 
         # read summary of wikipedia article
         case "wikipedia":         
