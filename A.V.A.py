@@ -57,19 +57,21 @@ class AVA(MDApp):
         return Builder.load_string(
 
             '''
-#:import get_color_from_hex kivy.utils.get_color_from_hex 
-BoxLayout: 
+#:import get_color_from_hex kivy.utils.get_color_from_hex
+FloatLayout: 
+    orientation: 'vertical'
+
     MDIconButton:
         icon: "ava.png"
-        pos_hint: {"center_x": .5, "center_y": .5}
         icon_size: "150sp"
+        pos_hint: {"center_x": .5, "center_y": .5}
         on_press: app.foo2()
-        md_bg_color: 0.86, 0.86, 0.86, 0.003
 
     MDIcon:
         id: box
         source: "white.png"
-        pos_hint: {"center_x": .5, "center_y": .5}
+        valign: "bottom"
+        halign: "left"
 '''
         )
 
@@ -105,10 +107,10 @@ BoxLayout:
             self.root.ids.box.source = "white.png"
         
         # try catch block to give out error message, to filter out exceptions 
-        try:
+        #try:
             # recognize said words via google recognizer API
             # add whitespace before and after said term, to match the data in database
-            saidterm = " " + listener.recognize_google(voice, language="de-AT") +  " "
+            saidterm = " suche test  " #" " + listener.recognize_google(voice, language="de-AT") +  " "
             term = saidterm.lower()
             
             # go over every altphrase
@@ -173,7 +175,7 @@ BoxLayout:
 
             print(f"Said term = {term}")
 
-            print(f"Triggered keyphrase = {keyphrase[0]}") 
+            # print(f"Triggered keyphrase = {keyphrase[0]}") 
             
             # function to open websites
             # bool parameter to say if there is an extra term to search by
@@ -361,8 +363,8 @@ BoxLayout:
             # else:
             #     print("Kein Befehl")
             
-        except Exception as e:                           
-            print(e)
+        # except Exception as e:                           
+        #     print(e)
     
     def foo2(self):
         try:
