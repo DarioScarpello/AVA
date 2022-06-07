@@ -31,7 +31,7 @@ from sklearn.linear_model import LinearRegression
 # decouple library for working with environment variables
 from decouple import config
 
-# UI Libraries
+# GUI Libraries
 from kivy.lang import Builder
 from kivymd.app import MDApp
 from kivy.properties import StringProperty
