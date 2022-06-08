@@ -65,7 +65,7 @@ FloatLayout:
         icon: "ava.png"
         icon_size: "150sp"
         pos_hint: {"center_x": .5, "center_y": .5}
-        on_press: app.foo2()
+        on_press: app.errorhandling()
 
     MDIcon:
         id: box
@@ -75,7 +75,7 @@ FloatLayout:
 '''
         )
 
-    def foo1(self):
+    def main(self):
         # create speaker object
         speaker = pyttsx3.init()
 
@@ -251,7 +251,7 @@ FloatLayout:
 
                 # search on youtube
                 case "youtube":
-                    openWebsite("https://www.youtube.com/results?search_query=", "Das hab ich auf Youtube gefunden", False)
+                    openWebsite("https://www.youtube.com/results?search_query=", "Das hab ich auf Youtube gefunden", True)
                 
                 # open first video on yoututbe
                 case "youtube abspielen":
@@ -368,10 +368,13 @@ FloatLayout:
         except Exception as e:                           
             print(e)
     
-    def foo2(self):
+    def errorhandling(self):
         try:
-            _thread.start_new_thread(self.foo1)
+            _thread.start_new_thread(self.main)
         except:
             print("error")
+            speaker = pyttsx3.init()
+            speaker.say("Das habe ich leider nicht verstanden.")
+            speaker.runAndWait()
 
 AVA().run()
