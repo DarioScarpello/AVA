@@ -411,6 +411,10 @@ COPY public.altphrases (id, phrase, fid) FROM stdin;
 60	 wetter in 	10
 61	 wie ist das wetter in 	10
 62	 suche 	3
+63	 was habe ich noch zu erledigen 	5
+64	 welche aufgaben 	5
+65	 welche aufgaben habe ich zu erledigen 	5
+66	 welche aufgaben habe ich noch zu erledigen 	5
 \.
 
 
@@ -477,7 +481,7 @@ COPY public.uebung (uebungs_id, bezeichnung, durchfuehrungsbeschreibung) FROM st
 -- Name: altphrases_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.altphrases_id_seq', 62, true);
+SELECT pg_catalog.setval('public.altphrases_id_seq', 66, true);
 
 
 --
