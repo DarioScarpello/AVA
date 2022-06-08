@@ -107,10 +107,10 @@ FloatLayout:
             self.root.ids.box.source = "white.png"
         
         # try catch block to give out error message, to filter out exceptions 
-        #try:
+        try:
             # recognize said words via google recognizer API
             # add whitespace before and after said term, to match the data in database
-            saidterm = " suche test  " #" " + listener.recognize_google(voice, language="de-AT") +  " "
+            saidterm = " " + listener.recognize_google(voice, language="de-AT") +  " "
             term = saidterm.lower()
             
             # go over every altphrase
@@ -174,6 +174,8 @@ FloatLayout:
                     # break
 
             print(f"Said term = {term}")
+
+            print(f"Triggered keyphrase = {keyphrase}")
 
             # print(f"Triggered keyphrase = {keyphrase[0]}") 
             
@@ -363,8 +365,8 @@ FloatLayout:
             # else:
             #     print("Kein Befehl")
             
-        # except Exception as e:                           
-        #     print(e)
+        except Exception as e:                           
+            print(e)
     
     def foo2(self):
         try:
