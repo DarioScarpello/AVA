@@ -26,4 +26,5 @@ pip install matplotlib
 pip install scikit-learn
 pip install python-decouple
 pip install kivymd
+pip install PyAudio
 ```
