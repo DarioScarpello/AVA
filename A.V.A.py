@@ -86,7 +86,7 @@ FloatLayout:
         db_pass = config('db_pass')
 
         # Creating the connection via the connection string to the database and the cursor to fetch the data 
-        connection = psycopg2.connect(f"dbname={db_name} user={db_user} password={db_pass}") # Connectionstring verbergen !!!
+        connection = psycopg2.connect(f"dbname={db_name} user={db_user} password={db_pass}") 
         cur = connection.cursor()
 
         # the query that gets all the altphrases, which will be used throughout the whole program
