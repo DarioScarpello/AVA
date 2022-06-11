@@ -222,7 +222,7 @@ FloatLayout:
                         result = int(firstNum) * int(secondNum)
                         speaker.say(f"Das Ergebnis von {firstNum} multipliziert mit {secondNum} ergibt {result}")
 
-                    case "diviert durch":
+                    case "dividiert durch":
                         result = int(firstNum) / int(secondNum)
                         speaker.say(f"Das Ergebnis von {firstNum} dividiert durch {secondNum} ergibt {result}")
 
@@ -370,11 +370,12 @@ FloatLayout:
     
     def errorhandling(self):
         try:
-            _thread.start_new_thread(self.main)
+            _thread.start_new_thread(self.main, ())
         except:
             print("error")
             speaker = pyttsx3.init()
             speaker.say("Das habe ich leider nicht verstanden.")
             speaker.runAndWait()
 
-AVA().run()
+if __name__ == "__main__":
+    AVA().run()
