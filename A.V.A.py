@@ -222,7 +222,7 @@ FloatLayout:
                         result = int(firstNum) * int(secondNum)
                         speaker.say(f"Das Ergebnis von {firstNum} multipliziert mit {secondNum} ergibt {result}")
 
-                    case "dividert durch":
+                    case "dividiert durch":
                         result = int(firstNum) / int(secondNum)
                         speaker.say(f"Das Ergebnis von {firstNum} dividiert durch {secondNum} ergibt {result}")
 
