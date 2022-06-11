@@ -113,6 +113,7 @@ FloatLayout:
             saidterm = " " + listener.recognize_google(voice, language="de-AT") +  " "
             term = saidterm.lower()
             
+            
             # go over every altphrase
             for phrase in altphrases:   
                 # check if an altphrase is present in the said term
@@ -196,9 +197,18 @@ FloatLayout:
             # function for calculation
             def calculate(splittetTerm, operator):
                 # get position of operator in term to get the two numbers to calculate
+                if (operator == "dividiert durch"):
+                    splittetTerm.remove("durch")
+                    operator = "dividiert"
+                elif (operator == "multipliziert mit"):
+                    splittetTerm.remove("mit")
+                    operator = "multipliziert"
+                    
+                
                 operationPos = splittetTerm.index(operator)
                 firstNum = splittetTerm[operationPos-1]
                 secondNum = splittetTerm[operationPos+1]
+
 
                 # do the correct operation depending on the said operator
                 match operator:
@@ -210,26 +220,30 @@ FloatLayout:
                         result = int(firstNum) - int(secondNum)
                         speaker.say(f"Das Ergebnis von {firstNum} minus {secondNum} ergibt {result}")
 
-                    case "mal":
-                        result = int(firstNum) * int(secondNum)
-                        speaker.say(f"Das Ergebnis von {firstNum} multipliziert mit {secondNum} ergibt {result}")
+                    case "dividiert":
+                        result = int(firstNum) / int(secondNum)
+                        speaker.say(f"Das Ergebnis von {firstNum} dividiert durch {secondNum} ergibt {result}")
 
-                    case "multipliziert mit":
-                        result = int(firstNum) * int(secondNum)
-                        speaker.say(f"Das Ergebnis von {firstNum} multipliziert mit {secondNum} ergibt {result}")
+                    case "/":
+                        result = int(firstNum) / int(secondNum)
+                        speaker.say(f"Das Ergebnis von {firstNum} dividiert durch {secondNum} ergibt {result}")
 
                     case "x":
                         result = int(firstNum) * int(secondNum)
                         speaker.say(f"Das Ergebnis von {firstNum} multipliziert mit {secondNum} ergibt {result}")
 
-                    case "dividiert durch":
-                        result = int(firstNum) / int(secondNum)
-                        speaker.say(f"Das Ergebnis von {firstNum} dividiert durch {secondNum} ergibt {result}")
+                    case "multipliziert":
+                        result = int(firstNum) * int(secondNum)
+                        speaker.say(f"Das Ergebnis von {firstNum} multipliziert mit {secondNum} ergibt {result}")
+
+                    case "mal":
+                        result = int(firstNum) * int(secondNum)
+                        speaker.say(f"Das Ergebnis von {firstNum} multipliziert mit {secondNum} ergibt {result}")
 
                     case "durch":
                         result = int(firstNum) / int(secondNum)
                         speaker.say(f"Das Ergebnis von {firstNum} dividiert durch {secondNum} ergibt {result}")
-                
+
                 speaker.runAndWait()
 
             # switch-case to get the correct code via command
@@ -280,6 +294,9 @@ FloatLayout:
 
                     elif "durch" in term:
                         operator = "durch"
+
+                    elif "/" in term:
+                        operator = "/"
 
                     elif "x" in term:
                         operator = "x"
@@ -367,15 +384,15 @@ FloatLayout:
             
         except Exception as e:                           
             print(e)
-    
+            speaker.say("Das habe ich leider nicht verstanden.")
+            speaker.runAndWait()
+
     def errorhandling(self):
         try:
             _thread.start_new_thread(self.main, ())
         except:
-            print("error")
-            speaker = pyttsx3.init()
-            speaker.say("Das habe ich leider nicht verstanden.")
-            speaker.runAndWait()
+            print("error when starting thread")
+            
 
 if __name__ == "__main__":
     AVA().run()
