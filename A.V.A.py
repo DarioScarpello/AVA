@@ -22,6 +22,7 @@ import wikipediaapi
 import re
 import urllib.request
 import urllib.parse
+from bs4 import BeautifulSoup
 
 # pandas, pyplot, sklearn librarys for simple prediction
 import pandas
@@ -312,8 +313,16 @@ FloatLayout:
                 # read summary of wikipedia article
                 case "wikipedia":         
                     # set the language and get the first 250 characters of wikipedia page, if it exists                                                          
+                        
                     wiki_wiki = wikipediaapi.Wikipedia('de')
-                    page_py = wiki_wiki.page(termToSearch)
+
+                    # hardcoded workaround to find "HTL Wien West"
+                    if "htl wien west" in term:
+                        page_py = wiki_wiki.page("HTL_Wien_West")
+                    else:
+                        page_py = wiki_wiki.page(termToSearch)
+
+
                     if page_py.exists() == True: 
                         speaker.say(page_py.summary[0:250])
                         speaker.runAndWait()
@@ -326,7 +335,7 @@ FloatLayout:
                         # listen via microphone
                         with sr.Microphone() as source:
                             listener.adjust_for_ambient_noise(source, duration=1)   # adjustment of the listener, to cut out ambient noise
-                            voice = listener.listen(source)
+                            voice = listener.listen(source, phrase_time_limit=5)
 
                         # get users answer
                         answer = " " + listener.recognize_google(voice, language="de-AT") +  " ".lower()
@@ -338,7 +347,12 @@ FloatLayout:
 
                         # open the according wikipedia page, if user wants to
                         if keyphrase[0] == "ja":
-                            termToSearch = termToSearch.title()
+                            # hardcoded workaround to find "HTL Wien West"
+                            if "htl wien west" in term:
+                                termToSearch = "HTL_Wien_West"
+                            else:
+                                termToSearch = termToSearch.title()
+
                             termForWikipedia = termToSearch.replace(" ", "_")
                             google_link = "https://de.wikipedia.org/wiki/" + termForWikipedia
                             webbrowser.open(google_link)
