@@ -25,7 +25,6 @@ pip install pandas
 pip install matplotlib
 pip install scikit-learn
 pip install python-decouple
-pip install kivymd
 pip install https://github.com/kivymd/KivyMD/archive/master.zip
 pip install PyAudio
 ```
