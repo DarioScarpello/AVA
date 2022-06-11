@@ -26,5 +26,5 @@ pip install matplotlib
 pip install scikit-learn
 pip install python-decouple
 pip install https://github.com/kivymd/KivyMD/archive/master.zip
-pip install PyAudio
+pip install PyAudio (Wenn die Installation über die offizielle Repo nicht funktioniert kann auch diese Repo verwendet werden: https://www.lfd.uci.edu/~gohlke/pythonlibs/#_pyaudio)
 ```
