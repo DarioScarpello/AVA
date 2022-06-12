@@ -114,7 +114,7 @@ FloatLayout:
             saidterm = " " + listener.recognize_google(voice, language="de-AT") +  " "
             term = saidterm.lower()
             
-            if "das war es mit unserer präsentation" in term:
+            if "abschlussworte" in term:
                 speaker.say("vielen dank für ihre aufmerksamkeit, das EYVA team und ich hoffen es hat ihnen gefallen. bei fragen stehen wir ihnen gerne zur verfügung.")
                 speaker.runAndWait()
                 return
