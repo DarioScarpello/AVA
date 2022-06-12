@@ -115,7 +115,7 @@ FloatLayout:
             term = saidterm.lower()
             
             if "das war es mit unserer präsentation" in term:
-                speaker.say("vielen dank für ihre aufmerksamkeit, das AVA team und ich hoffen es hat ihnen gefallen. bei fragen stehen wir ihnen gerne zur verfügung.")
+                speaker.say("vielen dank für ihre aufmerksamkeit, das EYVA team und ich hoffen es hat ihnen gefallen. bei fragen stehen wir ihnen gerne zur verfügung.")
                 speaker.runAndWait()
                 return
 
@@ -200,19 +200,21 @@ FloatLayout:
                     speaker.runAndWait()
                     
             # function for calculation
-            def calculate(splittetTerm, operator):
+            def calculate(splittedTerm, operator):
                 # get position of operator in term to get the two numbers to calculate
                 if (operator == "dividiert durch"):
-                    splittetTerm.remove("durch")
+                    splittedTerm.remove("durch")
                     operator = "dividiert"
                 elif (operator == "multipliziert mit"):
-                    splittetTerm.remove("mit")
+                    splittedTerm.remove("mit")
                     operator = "multipliziert"
+
+
+                operationPos = splittedTerm.index(operator)
+                firstNum = splittedTerm[operationPos-1]
+                secondNum = splittedTerm[operationPos+1]
                     
                 
-                operationPos = splittetTerm.index(operator)
-                firstNum = splittetTerm[operationPos-1]
-                secondNum = splittetTerm[operationPos+1]
 
 
                 # do the correct operation depending on the said operator
@@ -257,8 +259,10 @@ FloatLayout:
                 case "google":
                     openWebsite("https://www.google.com/search?q=", f"Das habe ich im Internet zu {termToSearch} gefunden.", True)
 
+                # show the weather forecast
                 case "wetter":
                     openWebsite("https://www.google.com/search?q=Wetter ", f"Das ist das Wetter in {termToSearch}.", True)
+
                 
                 # open google classroom
                 case "classroom":
@@ -286,7 +290,7 @@ FloatLayout:
                 # calculate said equasion
                 case "rechner":
                     # split said term to better define the operation       
-                    termSplittet = term.split(" ")
+                    termSplitted = term.split(" ")
 
                     if "plus" in term:
                         operator = "plus"
@@ -312,7 +316,7 @@ FloatLayout:
                     elif "mal" in term:
                         operator = "mal"
 
-                    calculate(termSplittet, operator)
+                    calculate(termSplitted, operator)
 
                 # read summary of wikipedia article
                 case "wikipedia":         
