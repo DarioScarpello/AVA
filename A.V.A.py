@@ -22,6 +22,7 @@ import wikipediaapi
 import re
 import urllib.request
 import urllib.parse
+from bs4 import BeautifulSoup
 
 # pandas, pyplot, sklearn librarys for simple prediction
 import pandas
@@ -85,7 +86,7 @@ FloatLayout:
         db_pass = config('db_pass')
 
         # Creating the connection via the connection string to the database and the cursor to fetch the data 
-        connection = psycopg2.connect(f"dbname={db_name} user={db_user} password={db_pass}") # Connectionstring verbergen !!!
+        connection = psycopg2.connect(f"dbname={db_name} user={db_user} password={db_pass}") 
         cur = connection.cursor()
 
         # the query that gets all the altphrases, which will be used throughout the whole program
@@ -113,6 +114,11 @@ FloatLayout:
             saidterm = " " + listener.recognize_google(voice, language="de-AT") +  " "
             term = saidterm.lower()
             
+            if "abschlussworte" in term:
+                speaker.say("vielen dank für ihre aufmerksamkeit, das EYVA team und ich hoffen es hat ihnen gefallen. bei fragen stehen wir ihnen gerne zur verfügung.")
+                speaker.runAndWait()
+                return
+
             # go over every altphrase
             for phrase in altphrases:   
                 # check if an altphrase is present in the said term
@@ -194,11 +200,22 @@ FloatLayout:
                     speaker.runAndWait()
                     
             # function for calculation
-            def calculate(splittetTerm, operator):
+            def calculate(splittedTerm, operator):
                 # get position of operator in term to get the two numbers to calculate
-                operationPos = splittetTerm.index(operator)
-                firstNum = splittetTerm[operationPos-1]
-                secondNum = splittetTerm[operationPos+1]
+                if (operator == "dividiert durch"):
+                    splittedTerm.remove("durch")
+                    operator = "dividiert"
+                elif (operator == "multipliziert mit"):
+                    splittedTerm.remove("mit")
+                    operator = "multipliziert"
+
+
+                operationPos = splittedTerm.index(operator)
+                firstNum = splittedTerm[operationPos-1]
+                secondNum = splittedTerm[operationPos+1]
+                    
+                
+
 
                 # do the correct operation depending on the said operator
                 match operator:
@@ -210,26 +227,30 @@ FloatLayout:
                         result = int(firstNum) - int(secondNum)
                         speaker.say(f"Das Ergebnis von {firstNum} minus {secondNum} ergibt {result}")
 
-                    case "mal":
-                        result = int(firstNum) * int(secondNum)
-                        speaker.say(f"Das Ergebnis von {firstNum} multipliziert mit {secondNum} ergibt {result}")
+                    case "dividiert":
+                        result = int(firstNum) / int(secondNum)
+                        speaker.say(f"Das Ergebnis von {firstNum} dividiert durch {secondNum} ergibt {result}")
 
-                    case "multipliziert mit":
-                        result = int(firstNum) * int(secondNum)
-                        speaker.say(f"Das Ergebnis von {firstNum} multipliziert mit {secondNum} ergibt {result}")
+                    case "/":
+                        result = int(firstNum) / int(secondNum)
+                        speaker.say(f"Das Ergebnis von {firstNum} dividiert durch {secondNum} ergibt {result}")
 
                     case "x":
                         result = int(firstNum) * int(secondNum)
                         speaker.say(f"Das Ergebnis von {firstNum} multipliziert mit {secondNum} ergibt {result}")
 
-                    case "diviert durch":
-                        result = int(firstNum) / int(secondNum)
-                        speaker.say(f"Das Ergebnis von {firstNum} dividiert durch {secondNum} ergibt {result}")
+                    case "multipliziert":
+                        result = int(firstNum) * int(secondNum)
+                        speaker.say(f"Das Ergebnis von {firstNum} multipliziert mit {secondNum} ergibt {result}")
+
+                    case "mal":
+                        result = int(firstNum) * int(secondNum)
+                        speaker.say(f"Das Ergebnis von {firstNum} multipliziert mit {secondNum} ergibt {result}")
 
                     case "durch":
                         result = int(firstNum) / int(secondNum)
                         speaker.say(f"Das Ergebnis von {firstNum} dividiert durch {secondNum} ergibt {result}")
-                
+
                 speaker.runAndWait()
 
             # switch-case to get the correct code via command
@@ -238,8 +259,10 @@ FloatLayout:
                 case "google":
                     openWebsite("https://www.google.com/search?q=", f"Das habe ich im Internet zu {termToSearch} gefunden.", True)
 
+                # show the weather forecast
                 case "wetter":
                     openWebsite("https://www.google.com/search?q=Wetter ", f"Das ist das Wetter in {termToSearch}.", True)
+
                 
                 # open google classroom
                 case "classroom":
@@ -267,7 +290,7 @@ FloatLayout:
                 # calculate said equasion
                 case "rechner":
                     # split said term to better define the operation       
-                    termSplittet = term.split(" ")
+                    termSplitted = term.split(" ")
 
                     if "plus" in term:
                         operator = "plus"
@@ -281,6 +304,9 @@ FloatLayout:
                     elif "durch" in term:
                         operator = "durch"
 
+                    elif "/" in term:
+                        operator = "/"
+
                     elif "x" in term:
                         operator = "x"
                     
@@ -290,13 +316,21 @@ FloatLayout:
                     elif "mal" in term:
                         operator = "mal"
 
-                    calculate(termSplittet, operator)
+                    calculate(termSplitted, operator)
 
                 # read summary of wikipedia article
                 case "wikipedia":         
                     # set the language and get the first 250 characters of wikipedia page, if it exists                                                          
+                        
                     wiki_wiki = wikipediaapi.Wikipedia('de')
-                    page_py = wiki_wiki.page(termToSearch)
+
+                    # hardcoded workaround to find "HTL Wien West"
+                    if "htl wien west" in term:
+                        page_py = wiki_wiki.page("HTL_Wien_West")
+                    else:
+                        page_py = wiki_wiki.page(termToSearch)
+
+
                     if page_py.exists() == True: 
                         speaker.say(page_py.summary[0:250])
                         speaker.runAndWait()
@@ -309,7 +343,7 @@ FloatLayout:
                         # listen via microphone
                         with sr.Microphone() as source:
                             listener.adjust_for_ambient_noise(source, duration=1)   # adjustment of the listener, to cut out ambient noise
-                            voice = listener.listen(source)
+                            voice = listener.listen(source, phrase_time_limit=5)
 
                         # get users answer
                         answer = " " + listener.recognize_google(voice, language="de-AT") +  " ".lower()
@@ -321,7 +355,12 @@ FloatLayout:
 
                         # open the according wikipedia page, if user wants to
                         if keyphrase[0] == "ja":
-                            termToSearch = termToSearch.title()
+                            # hardcoded workaround to find "HTL Wien West"
+                            if "htl wien west" in term:
+                                termToSearch = "HTL_Wien_West"
+                            else:
+                                termToSearch = termToSearch.title()
+
                             termForWikipedia = termToSearch.replace(" ", "_")
                             google_link = "https://de.wikipedia.org/wiki/" + termForWikipedia
                             webbrowser.open(google_link)
@@ -367,14 +406,15 @@ FloatLayout:
             
         except Exception as e:                           
             print(e)
-    
-    def errorhandling(self):
-        try:
-            _thread.start_new_thread(self.main)
-        except:
-            print("error")
-            speaker = pyttsx3.init()
             speaker.say("Das habe ich leider nicht verstanden.")
             speaker.runAndWait()
 
-AVA().run()
+    def errorhandling(self):
+        try:
+            _thread.start_new_thread(self.main, ())
+        except:
+            print("error when starting thread")
+            
+
+if __name__ == "__main__":
+    AVA().run()
